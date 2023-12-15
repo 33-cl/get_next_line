@@ -6,7 +6,7 @@
 /*   By: maeferre <maeferre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 17:18:32 by maeferre          #+#    #+#             */
-/*   Updated: 2023/12/14 14:40:37 by maeferre         ###   ########.fr       */
+/*   Updated: 2023/12/15 02:31:23 by maeferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static char	*fill(char *str, char const *s1, char const *s2)
 	return (str);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	size_t		len_total;
 	char		*str;
@@ -57,7 +57,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	str = malloc(sizeof(char) * (len_total + 1));
 	if (!str)
 		return (NULL);
-	return (fill(str, s1, s2));
+	fill(str, s1, s2);
+	return (str);
 }
 
 void	*ft_memmove(void *dest, const void *src, size_t n)

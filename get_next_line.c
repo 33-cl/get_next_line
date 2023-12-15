@@ -6,7 +6,7 @@
 /*   By: maeferre <maeferre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 13:46:39 by maeferre          #+#    #+#             */
-/*   Updated: 2023/12/14 18:02:08 by maeferre         ###   ########.fr       */
+/*   Updated: 2023/12/15 02:47:21 by maeferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,29 +15,30 @@
 char	*get_next_line(int fd)
 {
 	static char	buf[BUFFER_SIZE + 1];
-	char		*res = "\0";
-	char		*temp = "\0";
-	int			val_read;
+	char		*res;
+	char		*temp;
 	
-	val_read = 1;
 	if (buf[0] == '\0')
 	{
-		val_read = read(fd, buf, BUFFER_SIZE);
+		if (read(fd, buf, BUFFER_SIZE) == 0 || buf[0] == '\0')
+			return (NULL);
 	}
-	//printf("%d\n", val_read);
+	
 	// Tant que buf ne contient pas de '\n', on ajoute buf a res puis on met a jour buf
-	while (!new_line_in_buf(buf) && val_read > 0)
+	while(new_line_in_buf(buf) == 0)
 	{
 		res = ft_strjoin(res, buf);
 		
-		val_read = read(fd, buf, BUFFER_SIZE);
+		if (read(fd, buf, BUFFER_SIZE) == 0 || buf[0] == '\0')
+			return (NULL);
 	}
+	
 	// Quand buf contient '\n', je remplis un temp puis je le join a res
-	temp = fill_temp(buf);
-	if (temp != NULL)
-		res = ft_strjoin(res, temp);
+	if (new_line_in_buf(buf) == 1)
+		temp = fill_temp(buf);
+	res = ft_strjoin(res, temp);
 
-
+	// Reinitialisation du buffer
 	shift_buffer(buf);
 
 	return (res);
@@ -59,7 +60,7 @@ char	*fill_temp(char *buf)
 	len_temp = 0;
 	while (buf[len_temp] != '\0' && buf[len_temp] != '\n')
 		len_temp++;
-
+		
 	// Allocate
 	str = malloc(sizeof(char) * (len_temp + 1));
 	if (!str)
@@ -78,11 +79,13 @@ char	*fill_temp(char *buf)
 
 /* 
 	Renvoie un booleen indiquant si il y a un '\n' dans le buffer
-	ex : |a|a|a| = 0   |a|\n|\a| = 1 
+	ex : |a|a|a| = 0   |a|\n|a| = 1 
 */
 
 int	new_line_in_buf(char *str)
 {
+	if (str[0] == '\0')
+		return (-1);
 	while (*str != '\0')
 	{
 		if (*str == '\n')
@@ -94,7 +97,8 @@ int	new_line_in_buf(char *str)
 
 /* 
 	Permet de Reinitialiser le buffer a la fin de get_next_line
-	ex : |a|a|a|\n|a|a|  -->  |a|a|\0|\0|\0|\0|
+	ex : |a|a|a|\n|a|a|  -->  |a|a|a|\0|\0|\0|
+		 |a|a|a|\n|\n|   -->  |\n|\0|\0|\0|\0|
 */
 
 void	shift_buffer(char *buf)
@@ -105,11 +109,10 @@ void	shift_buffer(char *buf)
 
 	// Compter la taille de length
 	i = 0;
-	length = 0;
+	length = 1;
 	while (buf[i] && buf[i] != '\n')
 		i++;
-	while (buf[i] == '\n')
-		i++;
+	i++;
 	start = i;
 	while (buf[i])
 	{
@@ -123,4 +126,3 @@ void	shift_buffer(char *buf)
 	ft_bzero(buf + length, length);
 
 }
-
