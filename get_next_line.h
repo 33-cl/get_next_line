@@ -6,7 +6,7 @@
 /*   By: maeferre <maeferre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 13:38:07 by maeferre          #+#    #+#             */
-/*   Updated: 2023/12/15 01:52:16 by maeferre         ###   ########.fr       */
+/*   Updated: 2023/12/19 23:02:55 by maeferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,10 @@
 # include <stdio.h>
 
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 1
+# define BUFFER_SIZE 9
 #endif
 
+char 		*ft_strcpy(char *dest, char *src);
 char		*get_next_line(int fd);
 size_t		ft_strlen(const char *s);
 char		*ft_strjoin(char *s1, char *s2);

@@ -6,7 +6,7 @@
 /*   By: maeferre <maeferre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 13:46:39 by maeferre          #+#    #+#             */
-/*   Updated: 2023/12/15 02:47:21 by maeferre         ###   ########.fr       */
+/*   Updated: 2023/12/19 23:03:05 by maeferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,26 +17,36 @@ char	*get_next_line(int fd)
 	static char	buf[BUFFER_SIZE + 1];
 	char		*res;
 	char		*temp;
+	int			readed;
 	
-	if (buf[0] == '\0')
-	{
-		if (read(fd, buf, BUFFER_SIZE) == 0 || buf[0] == '\0')
-			return (NULL);
-	}
+	temp = NULL;
+	res = NULL;
+	readed = 0;
+	
+	if (BUFFER_SIZE <= 0 || fd < 0 || read(fd, buf, BUFFER_SIZE) < 0)
+		return (NULL);
 	
 	// Tant que buf ne contient pas de '\n', on ajoute buf a res puis on met a jour buf
-	while(new_line_in_buf(buf) == 0)
+	while (new_line_in_buf(buf) == 0 && buf[0] != '\0')
 	{
 		res = ft_strjoin(res, buf);
 		
-		if (read(fd, buf, BUFFER_SIZE) == 0 || buf[0] == '\0')
+		readed = read(fd, buf, BUFFER_SIZE);
+		if (readed < 0)
 			return (NULL);
+		if (readed == 0)
+			break;
 	}
-	
+
 	// Quand buf contient '\n', je remplis un temp puis je le join a res
 	if (new_line_in_buf(buf) == 1)
+	{
 		temp = fill_temp(buf);
-	res = ft_strjoin(res, temp);
+		res = ft_strjoin(res, temp);
+		free(temp);
+	}
+	
+	
 
 	// Reinitialisation du buffer
 	shift_buffer(buf);
@@ -55,12 +65,21 @@ char	*fill_temp(char *buf)
 	char	*str;
 	
 	// Count
+	if (ft_strlen(buf) == 1 || buf[0] == '\n')
+	{
+		str = malloc(sizeof(char) * 2);
+		str[0] = '\n';
+		str[1] = '\0';
+		return (str);
+	}
 	if (buf == NULL)
-		return (NULL);
+		return NULL;
 	len_temp = 0;
 	while (buf[len_temp] != '\0' && buf[len_temp] != '\n')
 		len_temp++;
-		
+	if (buf[len_temp] == '\n')
+		len_temp++;
+
 	// Allocate
 	str = malloc(sizeof(char) * (len_temp + 1));
 	if (!str)
@@ -69,6 +88,11 @@ char	*fill_temp(char *buf)
 	// Fill
 	len_temp = 0;
 	while (buf[len_temp] != '\0' && buf[len_temp] != '\n')
+	{
+		str[len_temp] = buf[len_temp];
+		len_temp++;
+	}
+	if (buf[len_temp] == '\n')
 	{
 		str[len_temp] = buf[len_temp];
 		len_temp++;
@@ -112,7 +136,8 @@ void	shift_buffer(char *buf)
 	length = 1;
 	while (buf[i] && buf[i] != '\n')
 		i++;
-	i++;
+	if (buf[i] == '\n')
+		i++;
 	start = i;
 	while (buf[i])
 	{
