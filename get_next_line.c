@@ -6,7 +6,7 @@
 /*   By: maeferre <maeferre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 13:46:39 by maeferre          #+#    #+#             */
-/*   Updated: 2023/12/21 21:33:51 by maeferre         ###   ########.fr       */
+/*   Updated: 2023/12/21 22:01:04 by maeferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,11 @@ char	*get_next_line(int fd)
 		if (readed == 0)
 			return (res);
 		if (readed < 0)
+		{
+			ft_bzero(buf, BUFFER_SIZE);
+			free(res);
 			return (NULL);
+		}
 		
 	}
 
@@ -42,7 +46,11 @@ char	*get_next_line(int fd)
 		readed = read(fd, buf, BUFFER_SIZE);
 		buf[readed] = '\0';
 		if (readed < 0)
+		{
+			ft_bzero(buf, BUFFER_SIZE);
+			free(res);
 			return (NULL);
+		}
 	}
 	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
@@ -56,7 +64,11 @@ char	*get_next_line(int fd)
 		buf[readed] = '\0';
 		//printf("%d\n", readed);
 		if (readed < 0)
+		{
+			ft_bzero(buf, BUFFER_SIZE);
+			free(res);
 			return (NULL);
+		}
 	}
 
 	// Quand buf contient '\n', je remplis un temp puis je le join a res
