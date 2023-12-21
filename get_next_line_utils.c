@@ -6,7 +6,7 @@
 /*   By: maeferre <maeferre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 17:18:32 by maeferre          #+#    #+#             */
-/*   Updated: 2023/12/19 21:51:14 by maeferre         ###   ########.fr       */
+/*   Updated: 2023/12/21 20:33:51 by maeferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,19 +120,16 @@ void	*ft_memmove(void *dest, const void *src, size_t n)
 	return (dest);
 }
 
-void	*ft_bzero(void *s, size_t n)
+void	ft_bzero(void *s, size_t n)
 {
-	size_t			i;
-	unsigned char	*temp;
+	size_t	i;
 
 	i = 0;
-	temp = s;
 	while (i < n)
 	{
-		temp[i] = '\0';
+		((char *)s)[i] = '\0';
 		i++;
 	}
-	return (s);
 }
 
 char *ft_strcpy(char *dest, char *src)

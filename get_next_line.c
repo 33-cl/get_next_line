@@ -6,7 +6,7 @@
 /*   By: maeferre <maeferre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 13:46:39 by maeferre          #+#    #+#             */
-/*   Updated: 2023/12/21 01:42:12 by maeferre         ###   ########.fr       */
+/*   Updated: 2023/12/21 21:33:51 by maeferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,29 @@ char	*get_next_line(int fd)
 	
 	temp = NULL;
 	res = NULL;
-	readed = -1;
+
+	if (new_line_or_end(buf) == 2)
+	{
+		temp = fill_temp(buf);
+		res = ft_strjoin(res, temp);
+		free(temp);
+		readed = read(fd, buf, BUFFER_SIZE);
+		buf[readed] = '\0';
+		if (readed == 0)
+			return (res);
+		if (readed < 0)
+			return (NULL);
+		
+	}
 
 	// Premier read + check des erreurs
 	if (buf[0] == '\0')
+	{
 		readed = read(fd, buf, BUFFER_SIZE);
+		buf[readed] = '\0';
+		if (readed < 0)
+			return (NULL);
+	}
 	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
 	
@@ -73,13 +91,6 @@ char	*fill_temp(char *buf)
 	char	*str;
 	
 	// Count
-	if (ft_strlen(buf) == 1 || buf[0] == '\n')
-	{
-		str = malloc(sizeof(char) * 2);
-		str[0] = '\n';
-		str[1] = '\0';
-		return (str);
-	}
 	if (buf == NULL)
 		return (NULL);
 	len_temp = 0;
@@ -177,6 +188,8 @@ void	shift_buffer(char *buf)
 	// Compter la taille de length
 	i = 0;
 	length = 1;
+	if (buf[0] == '\0')
+		return ;
 	while (buf[i] && buf[i] != '\n')
 		i++;
 	if (buf[i] == '\n')
@@ -189,8 +202,7 @@ void	shift_buffer(char *buf)
 	}
 	// Mettre la partie a conserver dans buf
 	ft_memmove(buf, buf + start, length);
-
 	// Remplir buf de '\0'
-	ft_bzero(buf + length, length);
+	//ft_bzero(buf + (length - 2), length - 2);
 
 }

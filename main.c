@@ -8,42 +8,42 @@ int main()
         perror("Error opening file");
         return 1;
     }
-
     char *line;
 
 //--------
 
     
     // while ((line = get_next_line(fd)) != NULL) {
-    //     printf("%s", line);
+    //     printf("x : %s", line);
     //     free(line);
 
     // }
 
+
 //--------
 
     line = get_next_line(fd);
-    printf("result   : %s", line);
+    printf("gnl   : %s", line);
     free(line);
 
     line = get_next_line(fd);
-    printf("result   : %s", line);
+    printf("gnl   : %s", line);
     free(line);
 
     line = get_next_line(fd);
-    printf("result   : %s", line);
+    printf("gnl   : %s", line);
     free(line);
 
     line = get_next_line(fd);
-    printf("result   : %s", line);
+    printf("gnl   : %s", line);
     free(line);
 
     line = get_next_line(fd);
-    printf("result   : %s", line);
+    printf("gnl   : %s", line);
     free(line);
 
     line = get_next_line(fd);
-    printf("result   : %s", line);
+    printf("gnl   : %s", line);
     free(line);
 
     close(fd);
