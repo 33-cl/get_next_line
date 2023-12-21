@@ -3,21 +3,52 @@
 int main()
 {
     size_t  i = 0;
-    int fd = open("files/nl", O_RDONLY);
+    int fd = open("file", O_RDONLY);
     if (fd == -1) {
         perror("Error opening file");
         return 1;
     }
 
     char *line;
-    /*while ((line = get_next_line(fd)) != NULL) {
-        printf("%s\n", line);
 
-    }*/
+//--------
+
+    
+    // while ((line = get_next_line(fd)) != NULL) {
+    //     printf("%s", line);
+    //     free(line);
+
+    // }
+
+//--------
+
     line = get_next_line(fd);
-    printf("%s\n", line);
+    printf("result   : %s", line);
     free(line);
+
+    line = get_next_line(fd);
+    printf("result   : %s", line);
+    free(line);
+
+    line = get_next_line(fd);
+    printf("result   : %s", line);
+    free(line);
+
+    line = get_next_line(fd);
+    printf("result   : %s", line);
+    free(line);
+
+    line = get_next_line(fd);
+    printf("result   : %s", line);
+    free(line);
+
+    line = get_next_line(fd);
+    printf("result   : %s", line);
+    free(line);
+
     close(fd);
+
+//---------
 
     return 0;
 }

@@ -6,7 +6,7 @@
 /*   By: maeferre <maeferre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 13:38:07 by maeferre          #+#    #+#             */
-/*   Updated: 2023/12/19 23:02:55 by maeferre         ###   ########.fr       */
+/*   Updated: 2023/12/21 00:13:54 by maeferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,9 @@ char		*ft_strjoin(char *s1, char *s2);
 void		*ft_memmove(void *dest, const void *src, size_t n);
 void		*ft_bzero(void *s, size_t n);
 char		*fill_temp(char *buf);
-int			new_line_in_buf(char *str);
+int			new_line_or_end(char *str);
 void		shift_buffer(char *buf);
+char		*fill_temp_end(char *buf);
 
 #endif
 

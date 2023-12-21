@@ -6,7 +6,7 @@
 /*   By: maeferre <maeferre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 13:46:39 by maeferre          #+#    #+#             */
-/*   Updated: 2023/12/19 23:03:05 by maeferre         ###   ########.fr       */
+/*   Updated: 2023/12/21 01:42:12 by maeferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,32 +21,40 @@ char	*get_next_line(int fd)
 	
 	temp = NULL;
 	res = NULL;
-	readed = 0;
-	
-	if (BUFFER_SIZE <= 0 || fd < 0 || read(fd, buf, BUFFER_SIZE) < 0)
+	readed = -1;
+
+	// Premier read + check des erreurs
+	if (buf[0] == '\0')
+		readed = read(fd, buf, BUFFER_SIZE);
+	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
 	
 	// Tant que buf ne contient pas de '\n', on ajoute buf a res puis on met a jour buf
-	while (new_line_in_buf(buf) == 0 && buf[0] != '\0')
+	while (new_line_or_end(buf) == 0 && buf[0] != '\0' && readed != 0)
 	{
 		res = ft_strjoin(res, buf);
 		
 		readed = read(fd, buf, BUFFER_SIZE);
+		buf[readed] = '\0';
+		//printf("%d\n", readed);
 		if (readed < 0)
 			return (NULL);
-		if (readed == 0)
-			break;
 	}
 
 	// Quand buf contient '\n', je remplis un temp puis je le join a res
-	if (new_line_in_buf(buf) == 1)
+	if (new_line_or_end(buf) == 1)
 	{
 		temp = fill_temp(buf);
 		res = ft_strjoin(res, temp);
 		free(temp);
 	}
-	
-	
+
+	if (new_line_or_end(buf) == 2)
+	{
+		temp = fill_temp_end(buf);
+		res = ft_strjoin(res, temp);
+		free(temp);
+	}
 
 	// Reinitialisation du buffer
 	shift_buffer(buf);
@@ -73,7 +81,7 @@ char	*fill_temp(char *buf)
 		return (str);
 	}
 	if (buf == NULL)
-		return NULL;
+		return (NULL);
 	len_temp = 0;
 	while (buf[len_temp] != '\0' && buf[len_temp] != '\n')
 		len_temp++;
@@ -101,21 +109,56 @@ char	*fill_temp(char *buf)
 	return (str);
 }
 
+char	*fill_temp_end(char *buf)
+{
+	size_t	len_temp;
+	char	*str;
+
+	// Count
+	if (buf == NULL)
+		return (NULL);
+	len_temp = 0;
+	while (buf[len_temp])
+		len_temp++;
+	
+	// Allocate
+	str = malloc(sizeof(char) * (len_temp + 1));
+	if (!str)
+		return (NULL);
+	
+	// Fill
+	len_temp = 0;
+	while (buf[len_temp])
+	{
+		str[len_temp] = buf[len_temp];
+		len_temp++;
+	}
+	str[len_temp] = '\0';
+	return (str);
+	
+}
+
 /* 
-	Renvoie un booleen indiquant si il y a un '\n' dans le buffer
-	ex : |a|a|a| = 0   |a|\n|a| = 1 
+	Renvoie un int indiquant si il y a un '\n' ou un '\0' dans le buffer
+	ex : |a|a|a| = 0   |a|\n|a| = 1   |a||\0||\0| = 2
 */
 
-int	new_line_in_buf(char *str)
+int	new_line_or_end(char *str)
 {
+	size_t	i;
+
+	i = 0;
+
 	if (str[0] == '\0')
 		return (-1);
-	while (*str != '\0')
+	while (str[i])
 	{
-		if (*str == '\n')
+		if (str[i] == '\n')
 			return (1);
-		str++;
+		i++;
 	}
+	if (i < BUFFER_SIZE)
+		return (2);
 	return (0);
 }
 
