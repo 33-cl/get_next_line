@@ -1,3 +1,4 @@
-Passing 110/100
+Passing 105/100
 
-Bonus is not passing except the 'one single static variable'
+Mandatory passing perfectly
+One single static variable adding 5 points, let your evaluators know this
